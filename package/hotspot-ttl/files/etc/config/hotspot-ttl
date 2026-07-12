@@ -1,0 +1,6 @@
+config ttl 'main'
+    option enabled '0'
+    option ttl_value '65'
+    option interface 'wan'
+    option direction 'both'
+    option protocol 'all'

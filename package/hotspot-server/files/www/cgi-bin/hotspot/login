@@ -1,0 +1,24 @@
+#!/bin/sh
+# HotspotOS CGI Login Handler
+
+echo "Content-Type: application/json"
+echo ""
+
+# Parse query string or POST data
+read -r POST_DATA
+
+# Extract parameters
+USERNAME=$(echo "$POST_DATA" | grep -oP 'username=\K[^&]+' | urldecode)
+PASSWORD=$(echo "$POST_DATA" | grep -oP 'password=\K[^&]+' | urldecode)
+MAC=$(echo "$POST_DATA" | grep -oP 'mac=\K[^&]+' | urldecode)
+IP=$(echo "$POST_DATA" | grep -oP 'ip=\K[^&]+' | urldecode)
+
+[ -z "$MAC" ] && MAC="${REMOTE_HOST:-00:00:00:00:00:00}"
+[ -z "$IP" ] && IP="${REMOTE_ADDR:-0.0.0.0}"
+
+# Authenticate
+if /usr/lib/hotspotos/server.sh authenticate "$USERNAME" "$PASSWORD" "$MAC" "$IP"; then
+    echo '{"success": true, "message": "Login successful", "redirect": "/hotspot/success.html"}'
+else
+    echo '{"success": false, "message": "Invalid username or password"}'
+fi

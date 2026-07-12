@@ -1,0 +1,3 @@
+#!/bin/sh
+/etc/init.d/hotspot-server enable 2>/dev/null
+exit 0

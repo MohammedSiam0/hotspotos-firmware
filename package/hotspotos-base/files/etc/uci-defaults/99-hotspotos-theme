@@ -1,0 +1,22 @@
+#!/bin/sh
+# HotspotOS Theme Setup
+# Runs on first boot after package installation
+
+# Set HotspotOS theme as default
+uci set luci.main.mediaurlbase='/luci-static/hotspotos'
+uci set luci.main.lang='auto'
+uci commit luci
+
+# Set hostname
+uci set system.@system[0].hostname='HotspotOS'
+uci set system.@system[0].zonename='UTC'
+uci set system.@system[0].timezone='UTC'
+uci commit system
+
+# Enable HotspotOS service
+/etc/init.d/hotspotos enable 2>/dev/null
+
+# Log initialization
+logger -t hotspotos "HotspotOS base system initialized"
+
+exit 0

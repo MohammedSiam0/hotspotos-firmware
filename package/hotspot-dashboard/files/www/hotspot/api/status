@@ -1,0 +1,41 @@
+#!/bin/sh
+# HotspotOS Dashboard API - JSON Status Output
+
+echo "Content-Type: application/json"
+echo ""
+
+. /usr/lib/hotspotos/utils.sh
+
+# Get system stats
+CPU=$(top -bn1 | grep "CPU:" | head -1 | awk '{print $2}' | sed 's/%//g' || echo "0")
+[ -z "$CPU" ] && CPU="0"
+
+RAM=$(free | grep Mem | awk '{printf "%.1f", $3/$2 * 100.0}' || echo "0")
+[ -z "$RAM" ] && RAM="0"
+
+FLASH=$(df -h / | tail -1 | awk '{print $5}' | sed 's/%//' || echo "0")
+[ -z "$FLASH" ] && FLASH="0"
+
+UPTIME=$(cat /proc/uptime | awk '{printf "%.0f", $1/3600}' || echo "0")
+[ -z "$UPTIME" ] && UPTIME="0"
+
+ONLINE_USERS=$(get_online_users)
+
+# Check internet
+INTERNET="false"
+if ping -c 1 -W 2 8.8.8.8 >/dev/null 2>&1; then
+    INTERNET="true"
+fi
+
+# Output JSON
+cat <<EOF
+{
+    "internet": $INTERNET,
+    "online_users": $ONLINE_USERS,
+    "cpu": $CPU,
+    "ram": $RAM,
+    "flash": $FLASH,
+    "uptime": "$UPTIME hours",
+    "timestamp": "$(date -Iseconds)"
+}
+EOF

@@ -1,0 +1,12 @@
+config trial 'main'
+    option enabled '1'
+    option trial_time '30'
+    option once_per_mac '1'
+    option reset_every_24h '1'
+    option auto_block '1'
+    option bandwidth_limit '1024'
+    option redirect_url '/hotspot/login.html'
+
+config schedule 'schedule'
+    option reset_hour '0'
+    option reset_minute '0'

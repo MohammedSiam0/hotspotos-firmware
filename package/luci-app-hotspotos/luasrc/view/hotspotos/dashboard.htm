@@ -1,0 +1,64 @@
+<%+header%>
+
+<div class="cbi-map">
+    <h2><%:HotspotOS Dashboard%></h2>
+    <p><%:Real-time system overview and status monitoring.%></p>
+
+    <fieldset class="cbi-section">
+        <legend><%:System Status%></legend>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+            <div class="cbi-value">
+                <label class="cbi-value-title"><%:Internet%></label>
+                <div class="cbi-value-field" id="dash-internet">Loading...</div>
+            </div>
+            <div class="cbi-value">
+                <label class="cbi-value-title"><%:Online Users%></label>
+                <div class="cbi-value-field" id="dash-users">-</div>
+            </div>
+            <div class="cbi-value">
+                <label class="cbi-value-title"><%:CPU%></label>
+                <div class="cbi-value-field" id="dash-cpu">-</div>
+            </div>
+            <div class="cbi-value">
+                <label class="cbi-value-title"><%:RAM%></label>
+                <div class="cbi-value-field" id="dash-ram">-</div>
+            </div>
+            <div class="cbi-value">
+                <label class="cbi-value-title"><%:Uptime%></label>
+                <div class="cbi-value-field" id="dash-uptime">-</div>
+            </div>
+        </div>
+    </fieldset>
+
+    <fieldset class="cbi-section">
+        <legend><%:Quick Actions%></legend>
+        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+            <a href="<%=url('admin/hotspotos/users')%>" class="cbi-button">Manage Users</a>
+            <a href="<%=url('admin/hotspotos/client')%>" class="cbi-button">Internet Client</a>
+            <a href="<%=url('admin/hotspotos/server')%>" class="cbi-button">Hotspot Server</a>
+            <a href="/hotspot/dashboard.html" target="_blank" class="cbi-button">Open Dashboard</a>
+        </div>
+    </fieldset>
+</div>
+
+<script>
+async function updateDashboard() {
+    try {
+        const res = await fetch('<%=url("admin/hotspotos/api/status")%>');
+        const data = await res.json();
+
+        document.getElementById('dash-internet').innerHTML = 
+            data.internet ? '<span style="color:#10b981">&#9679; Online</span>' : 
+                           '<span style="color:#ef4444">&#9679; Offline</span>';
+        document.getElementById('dash-users').textContent = data.online_users;
+        document.getElementById('dash-cpu').textContent = data.cpu + '%';
+        document.getElementById('dash-ram').textContent = data.ram + '%';
+        document.getElementById('dash-uptime').textContent = data.uptime + ' hours';
+    } catch(e) {}
+}
+
+updateDashboard();
+setInterval(updateDashboard, 10000);
+</script>
+
+<%+footer%>

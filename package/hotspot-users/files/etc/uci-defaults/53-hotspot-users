@@ -1,0 +1,4 @@
+#!/bin/sh
+# Initialize default admin user in database
+/usr/lib/hotspotos/users.sh init-defaults 2>/dev/null
+exit 0

@@ -1,0 +1,43 @@
+#!/bin/sh /etc/rc.common
+# HotspotOS Base Service
+# Manages system branding and core configuration
+
+START=10
+STOP=90
+
+USE_PROCD=1
+
+validate_system_section() {
+    uci_load_validate hotspotos system "$1" "$2" \
+        'brand_name:string:HotspotOS' \
+        'hostname:string:HotspotOS'
+}
+
+start_service() {
+    local brand_name hostname
+
+    config_load hotspotos
+    config_get brand_name system brand_name "HotspotOS"
+    config_get hostname system hostname "HotspotOS"
+
+    # Set system hostname
+    uci set system.@system[0].hostname="$hostname"
+    uci commit system
+
+    # Update banner
+    echo "HotspotOS v1.0.0 - $hostname" > /etc/banner.tmp
+
+    procd_open_instance
+    procd_set_param command /bin/true
+    procd_set_param respawn
+    procd_close_instance
+}
+
+reload_service() {
+    start
+}
+
+service_triggers() {
+    procd_add_reload_trigger "hotspotos"
+    procd_add_validation validate_system_section
+}

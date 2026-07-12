@@ -1,0 +1,13 @@
+#!/bin/sh
+# HotspotOS Core - First Boot Setup
+
+# Initialize database
+mkdir -p /var/lib/hotspotos
+/usr/lib/hotspotos/database.sh init 2>/dev/null
+
+# Enable service
+/etc/init.d/hotspot-core enable
+
+logger -t hotspot-core "HotspotOS Core initialized"
+
+exit 0

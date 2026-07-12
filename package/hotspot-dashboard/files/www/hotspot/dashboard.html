@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HotspotOS Dashboard</title>
+    <style>
+        :root { --primary: #2563eb; --secondary: #1e40af; --success: #10b981; --warning: #f59e0b; --danger: #ef4444; --gray-50: #f9fafb; --gray-800: #1f2937; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--gray-50); color: var(--gray-800); }
+        .header { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; padding: 1.5rem; }
+        .header h1 { font-size: 1.5rem; }
+        .header p { opacity: 0.9; margin-top: 0.25rem; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 1.5rem; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+        .card { background: white; border-radius: 0.75rem; padding: 1.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .card-header { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem; }
+        .card-icon { width: 40px; height: 40px; border-radius: 0.5rem; display: flex; align-items: center; justify-content: center; }
+        .card-icon.blue { background: rgba(37,99,235,0.1); color: var(--primary); }
+        .card-icon.green { background: rgba(16,185,129,0.1); color: var(--success); }
+        .card-icon.orange { background: rgba(245,158,11,0.1); color: var(--warning); }
+        .card-icon.red { background: rgba(239,68,68,0.1); color: var(--danger); }
+        .card-title { font-size: 0.875rem; color: #6b7280; font-weight: 500; }
+        .card-value { font-size: 1.75rem; font-weight: 700; color: var(--gray-800); margin-top: 0.25rem; }
+        .card-status { display: inline-flex; align-items: center; gap: 0.375rem; margin-top: 0.5rem; font-size: 0.875rem; font-weight: 500; }
+        .status-dot { width: 8px; height: 8px; border-radius: 50%; }
+        .status-dot.online { background: var(--success); }
+        .status-dot.offline { background: var(--danger); }
+        .status-text.online { color: var(--success); }
+        .status-text.offline { color: var(--danger); }
+        .footer { text-align: center; padding: 1.5rem; color: #9ca3af; font-size: 0.875rem; }
+        @media (max-width: 640px) { .grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>HotspotOS Dashboard</h1>
+        <p>Real-time system monitoring</p>
+    </div>
+
+    <div class="container">
+        <div class="grid">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon blue">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/></svg>
+                    </div>
+                    <div>
+                        <div class="card-title">Internet Status</div>
+                        <div class="card-value" id="internet-status">Checking...</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon green">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/></svg>
+                    </div>
+                    <div>
+                        <div class="card-title">Online Users</div>
+                        <div class="card-value" id="online-users">-</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon orange">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
+                    </div>
+                    <div>
+                        <div class="card-title">CPU Usage</div>
+                        <div class="card-value" id="cpu-usage">-</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon blue">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                    </div>
+                    <div>
+                        <div class="card-title">RAM Usage</div>
+                        <div class="card-value" id="ram-usage">-</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon orange">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                    </div>
+                    <div>
+                        <div class="card-title">Flash Usage</div>
+                        <div class="card-value" id="flash-usage">-</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon green">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    </div>
+                    <div>
+                        <div class="card-title">Uptime</div>
+                        <div class="card-value" id="uptime">-</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>HotspotOS v1.0.0 | <a href="/cgi-bin/luci">LuCI Admin</a></p>
+    </div>
+
+    <script>
+        async function updateDashboard() {
+            try {
+                const response = await fetch('/hotspot/api/status');
+                const data = await response.json();
+
+                document.getElementById('internet-status').innerHTML = 
+                    data.internet ? '<span class="status-text online"><span class="status-dot online"></span> Online</span>' : 
+                                   '<span class="status-text offline"><span class="status-dot offline"></span> Offline</span>';
+                document.getElementById('online-users').textContent = data.online_users;
+                document.getElementById('cpu-usage').textContent = data.cpu + '%';
+                document.getElementById('ram-usage').textContent = data.ram + '%';
+                document.getElementById('flash-usage').textContent = data.flash + '%';
+                document.getElementById('uptime').textContent = data.uptime;
+            } catch (err) {
+                console.error('Failed to update dashboard:', err);
+            }
+        }
+
+        updateDashboard();
+        setInterval(updateDashboard, 5000);
+    </script>
+</body>
+</html>
